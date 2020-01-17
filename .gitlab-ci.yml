@@ -15,12 +15,16 @@ build:
     stage: build
     script:
         - docker build --pull -t "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG" .
-        - docker push "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG"
+        - mkdir image
+        - docker save "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG" > image/app.tar
+    artifacts:
+        paths:
+            - image/
 
 test:
     stage: test
     script:
-        - docker build --pull -t "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG" .
+        - docker load -i image/app.tar
         - echo "FROM $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG" | cat - Dockerfile.test > temp && mv temp Dockerfile.test
         - cat Dockerfile.test
         - docker build -t "$CI_REGISTRY_IMAGE:test" -f Dockerfile.test .
@@ -29,8 +33,9 @@ test:
 deploy-master:
     stage: deploy
     script:
-        - docker build --pull -t "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG" .
+        - docker load -i image/app.tar
         - docker build --pull -t "$CI_REGISTRY_IMAGE" .
         - docker push "$CI_REGISTRY_IMAGE"
     only:
         - master
+        - dev
