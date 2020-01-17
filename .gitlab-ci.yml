@@ -15,7 +15,7 @@ build:
     stage: build
     script:
         - docker build --pull -t "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG" .
-        - docker push "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG"
+        - mkdir image
         - docker save "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG" > image/app.tar
     artifacts:
         paths:
