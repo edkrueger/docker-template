@@ -26,7 +26,6 @@ test:
     script:
         - docker load -i image/app.tar
         - echo "FROM $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG" | cat - Dockerfile.test > temp && mv temp Dockerfile.test
-        - cat Dockerfile.test
         - docker build -t "$CI_REGISTRY_IMAGE:test" -f Dockerfile.test .
         - docker run -t $CI_REGISTRY_IMAGE:test
 
