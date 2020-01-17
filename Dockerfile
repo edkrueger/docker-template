@@ -1,2 +1,2 @@
-FROM docker:latest
+FROM alpine:latest
 CMD ["echo", "hello"]
