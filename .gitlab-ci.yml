@@ -33,8 +33,26 @@ deploy-master:
     stage: deploy
     script:
         - docker load -i image/app.tar
-        - docker tag "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG" "$CI_REGISTRY_IMAGE"
+        - docker tag "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG" "$CI_REGISTRY_IMAGE:prod"
         - docker push "$CI_REGISTRY_IMAGE"
     only:
         - master
+
+deploy-staging:
+    stage: deploy
+    script:
+        - docker load -i image/app.tar
+        - docker tag "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG" "$CI_REGISTRY_IMAGE:stage"
+        - docker push "$CI_REGISTRY_IMAGE"
+    only:
+        - staging
+
+deploy-dev:
+    stage: deploy
+    script:
+        - docker load -i image/app.tar
+        - docker tag "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG" "$CI_REGISTRY_IMAGE:dev"
+        - docker push "$CI_REGISTRY_IMAGE"
+    only:
         - dev
+
